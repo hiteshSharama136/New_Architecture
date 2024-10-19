@@ -24,3 +24,18 @@ variable "storage_account_name" {
 variable "storage_account_access_key" {
   type        = string
 }
+
+variable "azure_webjobs_storage" {
+  description = "Azure WebJobs Storage connection string"
+  type        = string
+}
+
+variable "functions_worker_runtime" {
+  description = "Runtime for Azure Function"
+  type        = string
+}
+
+variable "service_bus_connection" {
+  description = "Service Bus connection string"
+  type        = string
+}
