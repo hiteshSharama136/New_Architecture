@@ -5,6 +5,8 @@ resource "azurerm_servicebus_queue" "my_queue" {
   name                = var.service_bus_queue_or_topic
   namespace_id        = var.namespace_id 
   max_size_in_megabytes = 1024 # Adjust as necessary
+
+  partitioning_enabled = true
 }
 
 resource "azurerm_servicebus_topic" "my_topic" {
@@ -13,4 +15,5 @@ resource "azurerm_servicebus_topic" "my_topic" {
   name                = var.service_bus_queue_or_topic
   namespace_id        = var.namespace_id 
   
+  partitioning_enabled = true
 }

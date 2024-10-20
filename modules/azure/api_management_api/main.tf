@@ -6,11 +6,17 @@ resource "azurerm_api_management_api" "function_api" {
   display_name        = var.api_display_name
   path                = var.api_path
   protocols           = var.api_protocols
+
+  import {
+    content_format = "swagger-link-json"
+    content_value  = "http://conferenceapi.azurewebsites.net/?format=json"
+  }
+
 }
 
 resource "azurerm_api_management_api_operation" "function_api_operation" {
   operation_id        = var.api_operation_id
-  api_name            = azurerm_api_management_api.function_api.name
+  api_name            = var.api_management_operation_name 
   api_management_name = var.api_management_name  
   resource_group_name = var.resource_group_name  
   display_name        = var.api_operation_display_name
@@ -20,5 +26,11 @@ resource "azurerm_api_management_api_operation" "function_api_operation" {
   response {
     status_code      = var.api_operation_response_status
     description = var.api_operation_response_description
+  }
+
+  template_parameter {
+    name     = "id"
+    type     = "number"
+    required = true
   }
 }

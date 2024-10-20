@@ -38,3 +38,13 @@ variable "scope" {
   description = "The scope at which the event subscription will be created (e.g., storage account or event grid topic)"
   type        = string
 }
+
+variable "storage_account_id" {
+  description = "Specifies the id of the storage account id where the storage queue is located."
+  type        = string
+}
+
+variable "queue_name" {
+  description = "Specifies the name of the storage queue where the Event Subscription will receive events."
+  type        = string
+}

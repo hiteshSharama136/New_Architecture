@@ -4,6 +4,10 @@ resource "azurerm_storage_account" "st_account" {
   location                  = var.location
   account_tier              = var.account_tier
   account_replication_type  = var.replication_type
+
+  tags = {
+    environment = "staging"
+  }
 }
 
 resource "azurerm_storage_container" "st_container" {

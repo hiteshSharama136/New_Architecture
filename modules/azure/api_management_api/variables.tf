@@ -14,6 +14,11 @@ variable "api_management_name" {
   type        = string
 }
 
+variable "api_management_operation_name" {
+  description = "The name of the API Management operation"
+  type        = string
+}
+
 variable "api_revision" {
   description = "The revision of the API"
   type        = string

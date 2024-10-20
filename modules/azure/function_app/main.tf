@@ -1,3 +1,14 @@
+resource "azurerm_app_service_plan" "example" {
+  name                = var.service_plan_name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  sku {
+    tier = "Standard"
+    size = "S1"
+  }
+}
+
 resource "azurerm_function_app" "func_app" {
   name                       = var.function_app_name
   location                   = var.location

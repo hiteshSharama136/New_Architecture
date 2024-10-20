@@ -17,3 +17,13 @@ variable "service_bus_queue_or_topic_id" {
   description = "ID of the Service Bus Queue or Topic"
   type        = string
 }
+
+variable "storage_account_id" {
+  description = "Specifies the id of the storage account id where the storage queue is located."
+  type        = string
+}
+
+variable "queue_name" {
+  description = "Specifies the name of the storage queue where the Event Subscription will receive events."
+  type        = string
+}

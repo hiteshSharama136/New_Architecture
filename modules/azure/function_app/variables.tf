@@ -3,6 +3,11 @@ variable "function_app_name" {
   description = "The name of the function app"
 }
 
+variable "service_plan_name" {
+  type        = string
+  description = "The name of the Service plan"
+}
+
 variable "resource_group_name" {
   type        = string
   description = "The name of the resource group"
