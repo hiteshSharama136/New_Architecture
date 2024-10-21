@@ -37,3 +37,4 @@ Azure API Management or Azure Functions Proxies - Equivalent to API Gateway for 
 ## root management group: https://learn.microsoft.com/en-us/azure/governance/management-groups/overview
 
 ## chatgpt prompt : now as you know i have to achieve that flow diagram connection and also setup using terraform each & every resources how to communicate as per the diagram every setup using terraform, i created terraform resources of azure services and dynamic modules too that you mentioned now what should i do to achieve this
+
