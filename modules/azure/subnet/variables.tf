@@ -28,3 +28,27 @@ variable "delegation" {
   }))
   description = "(Optional)"
 }
+
+variable "servicebus_subnet_name" {
+  type        = string
+  description = "The name of the Service Bus subnet"
+  default     = "servicebus-subnet"
+}
+
+variable "functionapp_subnet_name" {
+  type        = string
+  description = "The name of the Function App subnet"
+  default     = "functionapp-subnet"
+}
+
+variable "servicebus_address_prefixes" {
+  type        = list(string)
+  description = "Address prefixes for the Service Bus subnet"
+  default     = ["10.0.1.0/24"]
+}
+
+variable "functionapp_address_prefixes" {
+  type        = list(string)
+  description = "Address prefixes for the Function App subnet"
+  default     = ["10.0.2.0/24"]
+}

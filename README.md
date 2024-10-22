@@ -33,8 +33,128 @@ Azure API Management or Azure Functions Proxies - Equivalent to API Gateway for 
 
 10. Set up Managed Identities or Service Principals to ensure each service has permission to communicate with other services securely This Terraform module assigns a specified role to a Function App for access to a Storage Account.(storage_access)
 
+## Extra Needed Resources
+
+1. Resource Group: Centralized management for all your services. (resource_group)
+2. Virtual Network (VNet): Secure network for internal communication. (virtual_network_vnet)
+3. Subnets: Divide your VNet to manage resources like Function Apps and Service Bus separately. (subnet)
+4. NSG (Network Security Group): To control traffic in and out of subnets. (network_security_group)
+5. App Service Plan: Hosting for the Function Apps. (app_service)
+6. Azure Key Vault: Store sensitive information such as connection strings. (key_vault_secret)
+7. Managed Identity: Simplifies resource access for Function Apps, without hardcoding credentials. (user_assigned_identity)
+
 
 ## root management group: https://learn.microsoft.com/en-us/azure/governance/management-groups/overview
 
-## chatgpt prompt : now as you know i have to achieve that flow diagram connection and also setup using terraform each & every resources how to communicate as per the diagram every setup using terraform, i created terraform resources of azure services and dynamic modules too that you mentioned now what should i do to achieve this
+
+
+# Project structure
+
+├── main.tf                    # Main root file to call all modules
+├── variables.tf               # Input variables (location, naming conventions, etc.)
+├── outputs.tf                 # Output relevant information from the modules
+├── modules/ 
+│   ├── api_management/      # azurerm_api_management   
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf 
+│   ├── api_management-api/  # azurerm_api_management_api & azurerm_api_management_api_operation       
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf  
+│   ├── app_service/        # azurerm_app_service_plan
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf   
+│   ├── blob_storage/   #  azurerm_storage_account & azurerm_storage_container     
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf   
+│   ├── blob_to_servicebus/   #  azurerm_eventgrid_event_subscription    
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf   
+│   ├── function_app/     # azurerm_app_service_plan & azurerm_function_app  
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf  
+│   ├── key_vault_secret/   #   azurerm_key_vault_secret & azurerm_key_vault   
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf  
+│   ├── nsg/                   # azurerm_subnet_network_security_group_association & azurerm_network_security_group
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── queue_storage/        # azurerm_storage_queue
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf 
+│   ├── resource_group/     #  azurerm_resource_group   
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf 
+│   ├── service_bus/    #   azurerm_servicebus_topic & azurerm_servicebus_namespace   
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── servicebus_subscription/      # azurerm_eventgrid_event_subscription     
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── servicebus_topic/     # azurerm_servicebus_topic & azurerm_servicebus_queue    
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── storage_access/     #  azurerm_role_assignment -> storage_access_to_function
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── subnet/              # azurerm_subnet
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── user_assigned_identity/           # azurerm_user_assigned_identity & azurerm_function_app        
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── vnet/              # azurerm_virtual_network
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   
+├── terraform.tfvars           # Define variable values (like location, resource group name, etc.)
+└── README.md                  # Documentation for how to use the Terraform modules
+
+
+## Key Resources:
+
+1. Resource Group (azurerm_resource_group): Groups all Azure resources.
+2. Virtual Network (azurerm_virtual_network): Connects all resources in a secure network.
+3. Subnets (azurerm_subnet): Provides segmentation within the Virtual Network for Function Apps, Service Bus, etc.
+4. Network Security Groups (azurerm_network_security_group): Secures inbound and outbound traffic for each subnet.
+5. App Service Plan (azurerm_app_service_plan): Manages compute resources for Function Apps.
+6. Function Apps (azurerm_function_app): Handles serverless event-driven workflows.
+7. Blob Storage (azurerm_storage_account, azurerm_storage_container): Stores files/data for use by the Function Apps.
+8. Queue Storage (azurerm_storage_queue): Queue-based message storage.
+9. Service Bus (azurerm_servicebus_namespace, azurerm_servicebus_topic, azurerm_servicebus_queue): For decoupling communication between different services.
+10. API Management (azurerm_api_management, azurerm_api_management_api, azurerm_api_management_api_operation): Manages APIs that expose your backend services.
+11. Key Vault (azurerm_key_vault, azurerm_key_vault_secret): Secures sensitive information like connection strings.
+12. Event Grid (azurerm_eventgrid_event_subscription): Handles event-driven communication between Blob Storage and Service Bus.
+13. Role Assignments (azurerm_role_assignment): Manages access control, especially for Function Apps accessing storage.
+14. User-Assigned Identity (azurerm_user_assigned_identity): Manages identity for secure resource access without credentials.
+
+## What's Missing:
+1. Log Analytics Workspace (optional but recommended):
+    For monitoring and diagnostics of the Function Apps and Service Bus. If you want to track performance, errors, or usage metrics across your system, create a Log Analytics Workspace and link the Function Apps and other services to it for observability.
+    Resource: azurerm_log_analytics_workspace.
+
+2. Private Endpoints (optional, depending on security needs):
+    To secure access between your services (Blob Storage, Service Bus, etc.) through private IPs rather than public endpoints.
+    Resource: azurerm_private_endpoint.
+
+3. Azure Application Insights (optional but useful for Function Apps monitoring):
+    For tracing and telemetry to monitor the performance of your Function Apps.
+    Resource: azurerm_application_insights.
+
 
